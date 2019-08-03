@@ -1,9 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.421
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29025.244
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Insta.Graph.API", "Insta.Graph.API\Insta.Graph.API.csproj", "{7C6F09F5-4215-4C39-99A8-92FFC134F0A0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Insta.Graph.API", "Insta.Graph.API\Insta.Graph.API.csproj", "{7C6F09F5-4215-4C39-99A8-92FFC134F0A0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Insta.Graph.Web", "Insta.Graph.Web.Client\Insta.Graph.Web.csproj", "{58A9C184-F475-4F45-B5CB-154C8CFFF4C7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Insta.Graph.Entity", "Insta.Graph.API.Models\Insta.Graph.Entity.csproj", "{5DF7A369-216D-4BF4-89C8-9DF540A8D3D0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,14 @@ Global
 		{7C6F09F5-4215-4C39-99A8-92FFC134F0A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7C6F09F5-4215-4C39-99A8-92FFC134F0A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7C6F09F5-4215-4C39-99A8-92FFC134F0A0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{58A9C184-F475-4F45-B5CB-154C8CFFF4C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{58A9C184-F475-4F45-B5CB-154C8CFFF4C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{58A9C184-F475-4F45-B5CB-154C8CFFF4C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{58A9C184-F475-4F45-B5CB-154C8CFFF4C7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5DF7A369-216D-4BF4-89C8-9DF540A8D3D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5DF7A369-216D-4BF4-89C8-9DF540A8D3D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5DF7A369-216D-4BF4-89C8-9DF540A8D3D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5DF7A369-216D-4BF4-89C8-9DF540A8D3D0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
