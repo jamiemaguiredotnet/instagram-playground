@@ -1,10 +1,13 @@
 ﻿using Insta.Graph.API.DTO;
+using Insta.Graph.Entity;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Insta.Graph.API.Logic
 {
@@ -19,6 +22,8 @@ namespace Insta.Graph.API.Logic
 
         #endregion
 
+        #region constructor
+
         public InstagramManager(string token)
         {
             if (string.IsNullOrEmpty(token))
@@ -30,6 +35,8 @@ namespace Insta.Graph.API.Logic
                 _token = token;
             }
         }
+
+        #endregion
 
         private string Get(string uri)
         {
@@ -45,7 +52,7 @@ namespace Insta.Graph.API.Logic
             }
         }
 
-        private List<DTO.InstagramResult> DoMediaSearch()
+        private DTO.InstagramResult DoMediaSearch()
         {
             // get the list of media items
             // parse out the reponse and the fields we want
@@ -65,41 +72,51 @@ namespace Insta.Graph.API.Logic
 
             if (instagramResult != null && instagramResult.media != null)
             {
-                foreach (MediaData mediaData in instagramResult.media.data)
-                {
-                    list.Add(instagramResult);
-                }
+                return instagramResult;
             }
 
-            return list;
+            return null;
         }
 
-        public List<Entity.Media> GetMedia()
+        public async Task<List<Entity.Media>> GetMediaAsync()
         {
             // invoke the private method - DoMediaSearch()
-            List<InstagramResult> instagramResults = this.DoMediaSearch();
+            InstagramResult instagramResults = this.DoMediaSearch();
             List<Entity.Media> mediaModels = new List<Entity.Media>();
 
             //map from the JSON/DTO returned by DoMediaSearch() to the Domain Entities
-            foreach (InstagramResult instagramResult in instagramResults)
+            foreach (MediaData mediaData in instagramResults.media.data)
             {
-                foreach (MediaData mediaData in instagramResult.media.data)
+                Entity.Media media = new Entity.Media
                 {
-                    mediaModels.Add(
-                        new Entity.Media
-                        {
-                            id = mediaData.id,
-                            like_count = mediaData.like_count,
-                            comments_count = mediaData.comments_count,
-                            impression_count = GetMediaImpressionValue(GetMediaImpressionsInsight(mediaData)),
-                            media_url = mediaData.media_url,
-                            permalink = mediaData.permalink,
-                            Comments = GetMediaCommentsEntities(mediaData),
-                            timestamp = mediaData.timestamp,
-                            DateCreated = mediaData.DateCreated
-                        });
+                    id = mediaData.id,
+                    like_count = mediaData.like_count,
+                    caption = mediaData.caption,
+                    comments_count = mediaData.comments_count,
+                    impression_count = GetMediaImpressionValue(GetMediaImpressionsInsight(mediaData)),
+                    media_url = mediaData.media_url,
+                    permalink = mediaData.permalink,
+                    timestamp = mediaData.timestamp,
+                    DateCreated = mediaData.DateCreated
+                };
+
+                // run text analytics over the captionfield
+                media.CaptionInsights = GetTextAnalyticsInsight(media.id, media.caption);
+
+                // get comments and associated AI insights
+                media.Comments = GetMediaCommentsEntities(mediaData);
+                foreach (Comment comment in media.Comments)
+                {
+                    // run text analytics over text comments
+                    comment.TextAnalyticsInsight = GetTextAnalyticsInsight(comment.id, comment.text);
                 }
+
+                // get image insights
+                media.VisionInsights = await GetComputerVisionInsightAsync(media.media_url);
+                // finally, add the fully hydrated object to our list and return it
+                mediaModels.Add(media);
             }
+            
             return mediaModels;
         }
 
@@ -146,6 +163,28 @@ namespace Insta.Graph.API.Logic
 
             return comments;
         }
+
+        #region text analytics information
+
+        public TextAnalyticsInsight GetTextAnalyticsInsight(string documentid, string text)
+        {
+            TextAnalyticsManager textAnalytics = new TextAnalyticsManager();
+
+            return textAnalytics.GetInsights(documentid, text);
+        }
+
+        #endregion
+
+        #region image information
+
+        public async Task<ComputerVisionInsight> GetComputerVisionInsightAsync(string imageUrl)
+        {
+            ComputerVisionManager visionManager = new ComputerVisionManager();
+
+            return await visionManager.GetImageInsightsAsync(imageUrl);
+        }
+
+        #endregion
 
     }
 }

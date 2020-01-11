@@ -8,5 +8,11 @@ namespace Insta.Graph.Entity
     {
         public string id { get; set; }
         public string text { get; set; }
+        public TextAnalyticsInsight TextAnalyticsInsight { get; set; }
+
+        public Comment()
+        {
+            TextAnalyticsInsight = new TextAnalyticsInsight();
+        }
     }
 }
